@@ -8,7 +8,7 @@
 * KMeans 클러스터링을 하기 위해, X로 사용할 컬럼을 설정할 수 있는 앱
 * 그룹의 갯수를 정할 수 있는 앱
 
-* 위에서 유저들이 입력한 로 클러스터링하여 결과를 보여준다.
+* 위에서 유저들이 입력한 데이터로 클러스터링하여 결과를 보여준다.
 
 ## hyunsungKR
 <a href="https://github.com/hyunsungKR/"><img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white"/></a> <a href="https://hyunsungstory.tistory.com/"><img src="https://img.shields.io/badge/Tistory-466BB0?style=flat-square&logo=Tistory&logoColor=white"/></a>
