@@ -63,6 +63,7 @@ def run_kmeans_app():
 
                 # 각 컬럼데이터를 가져온다.
                 data=X[name]
+                data.reset_index(inplace=True,drop=True)
                 # 문자열인지 아닌지 나눠서 처리하면 된다.
                 if data.dtype == object :
                     
@@ -89,7 +90,7 @@ def run_kmeans_app():
 
             st.subheader('WCSS를 위한 클러스터링 갯수를 선택하세요.')
 
-            max_number=st.number_input('최대 그룹 선택',2,20,value=10)
+            max_number=st.number_input('최대 그룹 선택',2,20,value=4)
 
             wcss = []
             for k in np.arange(1,max_number+1):
