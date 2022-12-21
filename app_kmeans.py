@@ -7,6 +7,9 @@ from sklearn.cluster import KMeans
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sb
+from sklearn.preprocessing import LabelEncoder,OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import MinMaxScaler
 
 def run_kmeans_app():
     st.image('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyOb8tsP2NjTzqfQ1nfoznhkT5vBxv3n6eXA&usqp=CAU')
@@ -39,8 +42,8 @@ def run_kmeans_app():
         st.dataframe(df_max)
 
         st.subheader('Kmeans를 이용한 클러스터링')
-        st.warning('문자열로 구성된 컬럼은 선택하실 수 없습니다.')
-        
+        st.info('문자열로 구성된 컬럼은 2개 이하이면 레이블인코딩')
+        st.info('그렇지 않으면 원핫 인코딩 작업 후 숫자로 변환됩니다.')
         column_list=df.columns
         
         selected_columns=st.multiselect('X로 사용할 컬럼을 선택하세요.(최소 2개 이상)',column_list)
@@ -50,9 +53,39 @@ def run_kmeans_app():
 
             
             X = df[selected_columns]
-
                 
             st.dataframe(X)
+
+            # 문자열이 들어있으면 처리한 후에 화면에 보여준다.
+            X_new = pd.DataFrame()
+
+            for name in X.columns :
+
+                # 각 컬럼데이터를 가져온다.
+                data=X[name]
+                # 문자열인지 아닌지 나눠서 처리하면 된다.
+                if data.dtype == object :
+                    
+                    # 문자열이니, 갯수가 2개인지 아닌지 파악해서
+                    # 2개이면 레이블 인코딩, 그렇지 않으면
+                    # 원핫 인코딩 하도록 코드 작성
+                    if data.nunique() <= 2 :
+                        #레이블 인코딩
+                        label_encoder = LabelEncoder()
+                        X_new[name]=label_encoder.fit_transform(data)
+                    else :
+                        # 원핫 인코딩
+                        ct = ColumnTransformer ( [('encoder',OneHotEncoder(),[0])],
+                                remainder='passthrough')
+                        col_names=sorted(data.unique())
+                        X_new[col_names]=ct.fit_transform(data.to_frame())
+                else :
+                    # 숫자 데이터 처리
+                    
+                    X_new[name] = data
+            scaler = MinMaxScaler()
+            X_new = scaler.fit_transform(X_new)
+            st.dataframe(X_new)     
 
             st.subheader('WCSS를 위한 클러스터링 갯수를 선택하세요.')
 
@@ -61,7 +94,7 @@ def run_kmeans_app():
             wcss = []
             for k in np.arange(1,max_number+1):
                 kmeans=KMeans(n_clusters=k,random_state=5)
-                kmeans.fit(X)
+                kmeans.fit(X_new)
                 wcss.append(kmeans.inertia_)
 
 
@@ -80,7 +113,7 @@ def run_kmeans_app():
             k=st.number_input('그룹 갯수 결정',1,max_number)
 
             kmeans = KMeans(n_clusters=k,random_state=5)
-            y_pred = kmeans.fit_predict(X)
+            y_pred = kmeans.fit_predict(X_new)
             df['Group']=y_pred
 
             st.dataframe(df.sort_values('Group'))
