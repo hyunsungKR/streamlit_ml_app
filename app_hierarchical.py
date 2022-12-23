@@ -79,7 +79,8 @@ def run_hierarchical_app():
                         ct = ColumnTransformer ( [('encoder',OneHotEncoder(),[0])],
                                 remainder='passthrough')
                         col_names=sorted(data.unique())
-                        X_new[col_names]=ct.fit_transform(data.to_frame())
+                        X_new[col_names]=pd.get_dummies(data.to_frame())
+                        # X_new[col_names]=ct.fit_transform(data.to_frame())
                 else :
                     # 숫자 데이터 처리
                     
