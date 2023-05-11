@@ -11,7 +11,7 @@ from app_kmeans import run_kmeans_app
 from app_hierarchical import run_hierarchical_app
 
 def main() :
-    menu = ['Home','Kmeans','Hierarchical ']
+    menu = ['Home','Kmeans','Hierarchical']
     choice = st.sidebar.selectbox('Menu',menu)
 
     if choice == 'Home':
